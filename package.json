@@ -2,7 +2,7 @@
   "name": "dedup",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dedup.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/brandontiqui/dedup/issues"
   },
-  "homepage": "https://github.com/brandontiqui/dedup#readme"
+  "homepage": "https://github.com/brandontiqui/dedup#readme",
+  "dependencies": {
+    "fs": "0.0.1-security"
+  }
 }
