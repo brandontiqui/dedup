@@ -7,32 +7,43 @@ class DedupLeads {
 		this.sortDataSet();
 		this.deduplicate();
 		this.generateOutputFile();
+		this.generateOutputFile({includeLogs: true});
 	}
 
 	getLeads() {
 		return this.leads;
 	}
 
-	getDedupedLeads() {
-		return this.leads
-		  .filter(lead => !lead.isDuplicate)
-		  .map(lead => ({
-		  	_id: lead._id,
-		  	email: lead.email,
-		  	firstName: lead.firstName,
-		  	lastName: lead.lastName,
-		  	address: lead.address,
-		  	entryDate: lead.entryDate
-		  }));
+	getDedupedLeads(includeLogs) {
+		if (includeLogs) {
+			return this.leads;
+		} else {
+			return this.leads
+			  .filter(lead => !lead.isDuplicate)
+			  .map(lead => ({
+			  	_id: lead._id,
+			  	email: lead.email,
+			  	firstName: lead.firstName,
+			  	lastName: lead.lastName,
+			  	address: lead.address,
+			  	entryDate: lead.entryDate
+			  }));
+		}
 	}
 
-	generateOutputFile(includeLogs) {
+	generateOutputFile({includeLogs} = {}) {
 		const timestamp = new Date().toISOString();
-		const dedupedLeads = this.getDedupedLeads();
+		let dedupedLeads;
+		if (includeLogs) {
+			dedupedLeads = this.getDedupedLeads(includeLogs);
+		} else {
+			dedupedLeads = this.getDedupedLeads();
+		}
 		const data = {
 			leads: dedupedLeads
 		};
-		fs.writeFileSync(`./output_files/${this.fileName}_${timestamp}.json`, JSON.stringify(data, null, 2));
+		const outputFileName = includeLogs ? `${this.fileName}_with_logs` : this.fileName;
+		fs.writeFileSync(`./output_files/${outputFileName}_${timestamp}.json`, JSON.stringify(data, null, 2));
 	};
 
   getLeadsCount() {
