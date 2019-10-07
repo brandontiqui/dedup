@@ -20,6 +20,13 @@ Pass file name in command line
 node dedup.js input.json
 ```
 
+Pass multiple file names in command line
+- Output files will have the names input and input2
+- Timestamps are appended to each file name
+```bash
+node dedup.js input.json input2.json
+```
+
 ## Running Tests
 ```bash
 jasmine
