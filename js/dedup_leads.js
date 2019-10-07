@@ -50,6 +50,21 @@ class DedupLeads {
     return this.leads.length;
   }
 
+  getFieldChanges(keptObj, removedObj) {
+    const keysToCheck = ['_id', 'email', 'firstName', 'lastName', 'address', 'entryDate'];
+    const fieldChanges = [];
+    keysToCheck.forEach((key) => {
+      if (keptObj[key] !== removedObj[key]) {
+        fieldChanges.push({
+          field: key,
+          valueFrom: removedObj[key],
+          valueTo: keptObj[key]
+        });
+      }
+    });
+    return fieldChanges;
+  }
+
   sortDataSet() {
   	const compareDates = (a, b) => {
   	  let comparison = 0;
@@ -119,14 +134,18 @@ class DedupLeads {
   		    	let keptLeadObj = Object.assign({}, masterLead);
   		    	// remove other props
   		    	if (masterLead.logs.length !== 0) {
-  		    		keptLeadObj = Object.assign({}, masterLead.logs[masterLead.logs.length - 1]);
+              keptLeadObj = Object.assign({}, masterLead.logs[masterLead.logs.length - 1]).kept;
   		    	}
+
+            const fieldChanges = this.getFieldChanges(keptLeadObj, currentLead);
+
   		    	delete keptLeadObj.logs;
 
   		      // log current lead obj
   		      const logRecord = {
+              fieldChanges: fieldChanges,
   		      	removed: currentLead,
-  		      	keptLeadObj: keptLeadObj
+              kept: keptLeadObj
   		      };
   		      // label as duplicate
   		      currentLead.isDuplicate = true;
